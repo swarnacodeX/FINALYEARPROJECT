@@ -35,7 +35,7 @@ export default function SignUp() {
         console.log("User created:", response.data);
         // Redirect to login page or dashboard after successful signup
         sessionStorage.setItem("accessToken",response.data.accessToken);
-        router.push("/");
+        router.push("/?route=home");
       } else {
         console.error("Failed to sign up:", response.data);
       }
