@@ -26,8 +26,8 @@ public class UserServiceImpl implements UserService {
 
     // Login method
     @Override
-    public User login(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
+    public User login(String email, String passwordhash) {
+        return userRepository.findByEmailAndPassword(email, passwordhash);
     }
 
     // Update the access token

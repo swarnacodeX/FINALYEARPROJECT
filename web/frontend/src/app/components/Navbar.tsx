@@ -18,47 +18,18 @@ function Navbar({ className }: { className?: string }) {
     <div
       className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}
     >
-      <Menu setActive={setActive}>
-        <MenuItem setActive={setActive} active={active} item="HOME">
-          <div className="flex flex-col space-y-4 text-sm">
-            <HoveredLink href="/?route=home">Home</HoveredLink>
-            
-          </div>
+      <Menu>
+        <MenuItem  item="Home" >
+        
         </MenuItem>
-        <MenuItem setActive={setActive} active={active} item="AI Assistant">
-          <div className="  text-sm grid grid-cols-2 gap-10 p-4">
-            <ProductItem
-              title="Algochurn"
-              href="https://algochurn.com"
-              
-              description="Prepare for tech interviews like never before."
-            />
-           
-          </div>
+        <MenuItem item="AI Assistant">
+         
         </MenuItem>
        
-        <MenuItem  setActive={setActive} active={active} item="PROFILE">
-        <div className="  text-sm grid grid-cols-2 gap-10 p-4">
-        <ProductItem
-              title="Profile"
-              href="https://algochurn.com"
-              
-              description="Prepare for tech interviews like never before."
-            />
-
-        </div>
+        <MenuItem  item="PROFILE">
+       
         </MenuItem>
-        <MenuItem setActive={setActive} active={active} item="HEALTH RECORDS">
-          <div className="flex flex-col space-y-4 text-sm">
-          <ProductItem
-              title="Store Medical Data"
-              href="/?route=medrecord"
-              
-              description="Your medical data storehouse"
-            />
-            
-          </div>
-        </MenuItem>
+       
       </Menu>
     </div>
   );

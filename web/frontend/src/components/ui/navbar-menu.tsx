@@ -14,25 +14,24 @@ const transition = {
 };
 
 export const MenuItem = ({
-  setActive,
-  active,
+  
   item,
   children,
 }: {
   setActive: (item: string) => void;
-  active: string | null;
+  
   item: string;
   children?: React.ReactNode;
 }) => {
   return (
-    <div onMouseEnter={() => setActive(item)} className="relative ">
+    <div  className="relative ">
       <motion.p
         transition={{ duration: 0.3 }}
         className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
       >
         {item}
       </motion.p>
-      {active !== null && (
+      {/* {active !== null && (
         <motion.div
           initial={{ opacity: 0, scale: 0.85, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -55,21 +54,20 @@ export const MenuItem = ({
             </div>
           )}
         </motion.div>
-      )}
+      )} */}
     </div>
   );
 };
 
 export const Menu = ({
-  setActive,
+  
   children,
 }: {
   setActive: (item: string | null) => void;
   children: React.ReactNode;
 }) => {
   return (
-    <nav
-      onMouseLeave={() => setActive(null)} // resets the state
+    <nav // resets the state
       className="relative rounded-full border border-transparent dark:bg-black dark:border-white/[0.2] bg-white shadow-input flex justify-center space-x-4 px-8 py-6 "
     >
       {children}
@@ -79,25 +77,21 @@ export const Menu = ({
 
 export const ProductItem = ({
   title,
-  description,
-  href,
+ 
   
 }: {
   title: string;
-  description: string;
-  href: string;
+
   
 }) => {
   return (
-    <Link href={href} className="flex space-x-2">
+    <Link href={"/"} className="flex space-x-2">
       
       <div>
         <h4 className="text-xl font-bold mb-1 text-black dark:text-white">
           {title}
         </h4>
-        <p className="text-neutral-700 text-sm max-w-[10rem] dark:text-neutral-300">
-          {description}
-        </p>
+       
       </div>
     </Link>
   );
