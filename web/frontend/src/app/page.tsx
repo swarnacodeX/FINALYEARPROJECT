@@ -5,7 +5,8 @@ import { useStore } from "./components/storeZustand";
 import Login from "@/app/components/Login";
 import HomePage from "@/app/components/Home";
 import SignUp from "@/app/components/SignUp";
-import MedRc from "./components/MedRecords";
+import recordPage from "./components/HealthRecords";
+
 
 export default function Home() {
   const router = useRouter();
@@ -32,13 +33,13 @@ export default function Home() {
             <a href="/?route=signup"></a>
             <a href="/?route=login"></a>
             <a href="/?route=home"></a>
-            <a href="/?route=medrecord"></a>
+            <a href="/?route=healthrecord"></a>
           </>
         )}
       </nav>
 
       <div>
-        {route=="medrecord" && <MedRc/>}
+        {route=="medrecord" && <recordPage/>}
         {route === "home" && <HomePage />}
         {route === "signup" && <SignUp />}
         {route === "login" && <Login />}
