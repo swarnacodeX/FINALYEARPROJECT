@@ -5,7 +5,7 @@ import { useStore } from "./components/storeZustand";
 import Login from "@/app/components/Login";
 import HomePage from "@/app/components/Home";
 import SignUp from "@/app/components/SignUp";
-import recordPage from "./components/HealthRecords";
+import RecordPage from "./components/HealthRecords";
 
 
 export default function Home() {
@@ -39,7 +39,7 @@ export default function Home() {
       </nav>
 
       <div>
-        {route=="medrecord" && <recordPage/>}
+        {route=="medrecord" && <RecordPage/>}
         {route === "home" && <HomePage />}
         {route === "signup" && <SignUp />}
         {route === "login" && <Login />}

@@ -1,6 +1,6 @@
 "use client"
 import { useState,useEffect } from "react";
-export default function recordPage(){
+export default function RecordPage(){
     const [record, setRecord] = useState([]);
     useEffect(() => {
         const fetchRecord = async () => {
