@@ -1,49 +1,67 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useStore } from "./components/storeZustand";
-import Login from "@/app/components/Login";
-import HomePage from "@/app/components/Home";
-import SignUp from "@/app/components/SignUp";
-import RecordPage from "./components/HealthRecords";
-
+import Login from "@/app/components/pages/Login";
+import HomePage from "@/app/components/pages/Home";
+import SignUp from "@/app/components/pages/SignUp";
+import RecordPage from "@/app/components/pages/HealthRecords"; // Adjust the import if the file path is different.
 
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const route = searchParams.get("route");
   const [accToken, setAccToken] = useState<string | null>(null);
-  const setEmail = useStore((state) => state.setEmail);
 
   useEffect(() => {
     const token = sessionStorage.getItem("accessToken");
-    setAccToken(token); // Set the access token in state
+    setAccToken(token);
+
+    // Handle routing based on token
     if (!token) {
-      router.push("/?route=signup");
+      if (route !== "signup") {
+        router.push("/?route=login");
+      }
     } else {
-      router.push("/?route=home"); // Redirect to dashboard or home if authenticated
+      if (!route || route === "login") {
+        router.push("/?route=home");
+      }
     }
-  }, [router]);
+  }, [router, route]);
+
+  const renderPage = () => {
+    if (!accToken) {
+      if (route === "signup") return <SignUp />;
+      return <Login />;
+    }
+
+    // For authenticated users, render pages based on route
+    switch (route) {
+      case "home":
+        return <HomePage />;
+      case "medrecord":
+        return <RecordPage />;
+      default:
+        router.push("/?route=home");
+        return null;
+    }
+  };
+
+  const showNavbar = accToken && route !== "signup" && route !== "login";
 
   return (
     <div>
-      <nav>
-        {accToken === null && ( // Ensure to check the state instead
-          <>
-            <a href="/?route=signup"></a>
-            <a href="/?route=login"></a>
-            <a href="/?route=home"></a>
-            <a href="/?route=healthrecord"></a>
-          </>
-        )}
-      </nav>
+      {showNavbar && (
+        <nav>
+          <a href="/?route=home"></a>
+          <a href="/?route=medrecord"></a>
+         
+        </nav>
+      )}
 
-      <div>
-        {route=="medrecord" && <RecordPage/>}
-        {route === "home" && <HomePage />}
-        {route === "signup" && <SignUp />}
-        {route === "login" && <Login />}
-      </div>
+      <Suspense fallback={<div>Loading...</div>}>
+       
+        <div className="p-4">{renderPage()}</div>
+      </Suspense>
     </div>
   );
 }
