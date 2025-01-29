@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
+
 import { BentoGrid, BentoGridItem } from "../../../components/ui/bento-grid"; // Adjust the import paths as needed
-import { NavbarDemo } from "../utils/Navbar"; // Import NavbarDemo
-import { IconArrowWaveRightUp, IconBoxAlignRightFilled, IconBoxAlignTopLeft, IconClipboardCopy, IconFileBroken, IconSignature, IconTableColumn } from "@tabler/icons-react";
-import MEDAI from "../fonts/MED-AI.png";
-import Image from "next/image";
+import Navbar from "../utils/Navbar"; // Import NavbarDemo
+import {IconClipboardCopy, IconFileBroken } from "@tabler/icons-react";
 // Sample items for BentoGrid
 const items = [
   {
@@ -26,12 +25,10 @@ const items = [
 export default function HomePage() {
   const router = useRouter();
 
+  
   return (
     <div>
-      {/* <Image src="/web/frontend/src/app/fonts/MED-AI.png" alt="logo"
-      width={500}            
-      height={300}   /> */}
-      <NavbarDemo />
+      <Navbar />
       
       <BentoGrid className="max-w-4xl mx-auto mt-32"> {/* Increased margin-top for more spacing */}
         {items.map((item, i) => (
@@ -44,6 +41,7 @@ export default function HomePage() {
           />
         ))}
       </BentoGrid>
+      
     </div>
   );
 }

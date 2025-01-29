@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "RecordsApplication",
+            "request": "launch",
+            "mainClass": "main.java.records.record.RecordsApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "RecordsApplication",
+            "request": "launch",
+            "mainClass": "records.recordid.RecordsApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
             "name": "DemoApplication",
             "request": "launch",
             "mainClass": "com.springdemo.demo.DemoApplication",

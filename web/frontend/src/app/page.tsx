@@ -1,67 +1,51 @@
 "use client";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Login from "@/app/components/pages/Login";
 import HomePage from "@/app/components/pages/Home";
 import SignUp from "@/app/components/pages/SignUp";
-import RecordPage from "@/app/components/pages/HealthRecords"; // Adjust the import if the file path is different.
+import RecordPage from "@/app/components/pages/HealthRecords";
 
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const route = searchParams.get("route");
-  const [accToken, setAccToken] = useState<string | null>(null);
+
+  // Store token persistently
+  const accToken = useRef<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("accessToken");
-    setAccToken(token);
+    accToken.current = sessionStorage.getItem("accessToken");
 
-    // Handle routing based on token
-    if (!token) {
+    if (!accToken.current) {
+      // If not logged in and not on signup, redirect to login
       if (route !== "signup") {
-        router.push("/?route=login");
+        router.replace("/?route=login");
       }
     } else {
-      if (!route || route === "login") {
-        router.push("/?route=home");
+      // If logged in and on login or signup, redirect to home
+      if (!route || route === "login" || route === "signup") {
+        router.replace("/?route=home");
       }
     }
-  }, [router, route]);
 
-  const renderPage = () => {
-    if (!accToken) {
-      if (route === "signup") return <SignUp />;
-      return <Login />;
-    }
+    setIsLoaded(true);
+  }, [route, router]);
 
-    // For authenticated users, render pages based on route
-    switch (route) {
-      case "home":
-        return <HomePage />;
-      case "medrecord":
-        return <RecordPage />;
-      default:
-        router.push("/?route=home");
-        return null;
-    }
-  };
+  // Instead of returning null, use an empty div to prevent invalid returns
+  if (!isLoaded) return <div>Loading...</div>;
 
-  const showNavbar = accToken && route !== "signup" && route !== "login";
+  // If not logged in, allow access to login and signup pages
+  if (!accToken.current) {
+    return <div className="p-4">{route === "signup" ? <SignUp /> : <Login />}</div>;
+  }
 
+  // If logged in, render the correct page
   return (
-    <div>
-      {showNavbar && (
-        <nav>
-          <a href="/?route=home"></a>
-          <a href="/?route=medrecord"></a>
-         
-        </nav>
-      )}
-
-      <Suspense fallback={<div>Loading...</div>}>
-       
-        <div className="p-4">{renderPage()}</div>
-      </Suspense>
+    <div className="p-4">
+      {route === "home" && <HomePage />}
+      {route === "healthrecords" && <RecordPage />}
     </div>
   );
 }

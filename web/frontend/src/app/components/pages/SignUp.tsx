@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { cn } from "@/lib/utils";
-import { goToHome } from "../utils/Functions";
 import { IconArrowBigRightLineFilled } from "@tabler/icons-react";
 import axios from "axios";
 
@@ -18,29 +17,22 @@ export default function SignUp() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-
-    // Extract values from refs
-    const emailValue = email.current?.value;
-    const passwordValue = password.current?.value;
-    const firstnameValue = firstname.current?.value;
-    const lastnameValue = lastname.current?.value;
-
-    // Validate inputs
-    if (
-      emailValue && emailValue.length >= 7 && firstnameValue && firstnameValue.length > 0 && lastnameValue && lastnameValue.length > 0 && passwordValue && passwordValue.length > 0) 
+    if (email.current?.value && email.current?.value.length >= 7 && 
+      firstname.current?.value && firstname.current?.value.length > 0 
+      && lastname.current?.value && lastname.current?.value.length > 0
+       && password.current?.value && password.current?.value.length > 0) 
       {
       try {
         const response = await axios.post("http://localhost:8080/api/user/signup", {
-          email: emailValue,
-          firstname: firstnameValue,
-          lastname: lastnameValue,
-          password: passwordValue,
+          email: email.current?.value,
+          firstname: firstname.current?.value,
+          lastname: lastname.current?.value,
+          password: password.current?.value,
         });
-
         if (response.status === 200 || response.status === 201) {
           // Save access token and redirect to home
           sessionStorage.setItem("accessToken", response.data.accessToken);
-          goToHome(router);
+          router.push("/route=home");
         } else {
           setSignuperror("Error while signing up");
         }

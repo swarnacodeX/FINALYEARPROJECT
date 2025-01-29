@@ -1,39 +1,43 @@
 "use client";
-import React, { useState } from "react";
-import { Menu, MenuItem} from "../../../components/ui/navbar-menu";
+import React from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export function NavbarDemo() {
-  return (
-    <div className="relative w-full flex items-center justify-center">
-      <Navbar className="top-2" />
-      
-    </div>
-  );
-}
+const transition = {
+  type: "spring",
+  mass: 0.5,
+  damping: 11.5,
+  stiffness: 100,
+  restDelta: 0.001,
+  restSpeed: 0.001,
+};
 
-function Navbar({ className }: { className?: string }) {
-  const [active, setActive] = useState<string | null>(null);
+const Navbar = ({ className }: { className?: string }) => {
   return (
-    <div
-      className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}
-    >
-      <Menu>
-        <MenuItem  item="Home" >
-        
-        </MenuItem>
-        <MenuItem item="AI ASSISTANT">
-         
-        </MenuItem>
-       
-        <MenuItem  item="HEALTH RECORDS">
-       
-        </MenuItem>
-        <MenuItem  item="PROFILE">
-       
-        </MenuItem>
-       
-      </Menu>
+    <div className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}>
+      <nav className="relative rounded-full border border-transparent
+       dark:bg-black dark:border-white/[0.2] bg-white shadow-input flex justify-center space-x-4 px-8 py-6">
+        <NavItem link="/?route=home" item="Home" />
+        <NavItem link="/?route=aipage" item="AI ASSISTANT" />
+        <NavItem link="/?route=healthrecords" item="HEALTH RECORDS" />
+        <NavItem link="/?route=profile" item="PROFILE" />
+      </nav>
     </div>
   );
-}
+};
+
+const NavItem = ({ link, item }: { link: string; item: string }) => {
+  return (
+    <Link href={link} className="relative">
+      <motion.p
+        transition={{ duration: 0.3 }}
+        className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
+      >
+        {item}
+      </motion.p>
+    </Link>
+  );
+};
+
+export default Navbar;

@@ -6,7 +6,6 @@ import { Input } from "../../../components/ui/input";
 import { useRouter } from "next/navigation";
 import { useStore } from "../utils/storeZustand";
 import { cn } from "@/lib/utils";
-import { goToSignup, goToHome } from "../utils/Functions";
 import axios from "axios";
 import bgImage from "@/app/fonts/Background.jpg"
 
@@ -40,7 +39,7 @@ export default function Login() {
       if (response.status === 200 || response.status === 201) {
         sessionStorage.setItem("accessToken", response.data.accessToken);
         setEmail(emailValue);
-        goToHome(router); // Save email in Zustand store
+        router.push("/route=home") // Save email in Zustand store
       } else {
         setLoginError("Login failed. Please try again.");
       }
@@ -116,7 +115,7 @@ const BottomGradient = () => {
   );
 };
 
-const LabelInputContainer = ({
+export const LabelInputContainer = ({
   children,
   className,
 }: {

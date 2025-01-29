@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,12 +12,14 @@
   "dependencies": {
     "@radix-ui/react-label": "^2.1.0",
     "@tabler/icons-react": "^3.17.0",
+    "axios": "^1.7.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.15.0",
     "frontend": "file:",
     "lucide-react": "^0.441.0",
-    "next": "^15.1.2",
+    "next": "^15.1.6",
+    "openai": "^4.80.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tabler": "^1.0.0",
