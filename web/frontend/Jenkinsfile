@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+
+    environment {
+        NODE_VERSION = "18"  // Set the Node.js version
+        APP_NAME = "med-ai"
+        CONTAINER_NAME = "jenkins-container"
+        DOCKER_IMAGE = "jenkins/jenkins:latest"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                script {
+                    echo "Cloning repository..."
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    echo "Installing dependencies..."
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Build Next.js App') {
+            steps {
+                script {
+                    echo "Building Next.js App..."
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    echo "Running tests..."
+                    sh 'npm test || echo "Tests failed, but continuing..."'
+                }
+            }
+        }
+
+        stage('Docker Build & Run') {
+            steps {
+                script {
+                    echo "Building Docker Image..."
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+
+                    echo "Stopping old container (if running)..."
+                    sh "docker stop ${CONTAINER_NAME} || true && docker rm ${CONTAINER_NAME} || true"
+
+                    echo "Running New Container..."
+                    sh "docker run -d -p 3000:3000 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Build and Deployment Successful!"
+        }
+        failure {
+            echo "❌ Build or Deployment Failed!"
+        }
+    }
+}

@@ -32,7 +32,7 @@ export default function SignUp() {
         if (response.status === 200 || response.status === 201) {
           // Save access token and redirect to home
           sessionStorage.setItem("accessToken", response.data.accessToken);
-          router.push("/route=home");
+          router.push("/?route=home");
         } else {
           setSignuperror("Error while signing up");
         }
