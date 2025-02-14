@@ -58,7 +58,7 @@ pipeline {
                     bat "docker build -t ${DOCKER_IMAGE} web/frontend" // Specify correct context
 
                     echo "Stopping old container (if running)..."
-                    bat "docker stop ${CONTAINER_NAME} || true && docker rm ${CONTAINER_NAME} || true"
+                    bat "docker stop ${CONTAINER_NAME} || ver && docker rm ${CONTAINER_NAME} || ver"
 
                     echo "Running New Container..."
                     bat "docker run -d -p 3000:3000 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
