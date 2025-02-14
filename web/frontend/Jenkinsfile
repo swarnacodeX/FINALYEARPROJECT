@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_VERSION = "18"  // Set the Node.js version
+        NODE_VERSION = "20.9.0."  // Set the Node.js version
         APP_NAME = "med-ai"
         CONTAINER_NAME = "jenkins-container"
         DOCKER_IMAGE = "jenkins/jenkins:latest"
