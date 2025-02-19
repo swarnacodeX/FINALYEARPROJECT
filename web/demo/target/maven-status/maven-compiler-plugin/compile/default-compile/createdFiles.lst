@@ -1,6 +1,6 @@
-com\springdemo\demo\DemoApplication.class
-com\springdemo\demo\controller\UserControllers.class
-com\springdemo\demo\service\UserService.class
-com\springdemo\demo\service\impl\UserServiceImpl.class
-com\springdemo\demo\repository\UserRepository.class
-com\springdemo\demo\model\User.class
+users\DemoApplication.class
+users\controller\UserControllers.class
+users\service\UserService.class
+users\repository\UserRepository.class
+users\model\User.class
+users\service\UserServiceImpl.class
