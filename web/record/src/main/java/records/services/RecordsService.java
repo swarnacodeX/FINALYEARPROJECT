@@ -1,12 +1,12 @@
 package records.services;
 
-import records.model.Record;
+import records.model.Records;
 
 import java.util.List;
 
 public interface RecordsService {
-    Record addRecord(Record record);
-    List<Record> getRecordsByEmail(String email);
-    Record editRecord(String id, Record record);
+    Records addRecord(Records record);
+    List<Records> getRecordsByEmail(String email);
+    Records editRecord(String id, Records record);
     void deleteRecord(String id);
 }

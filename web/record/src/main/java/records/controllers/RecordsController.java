@@ -1,11 +1,13 @@
 package records.controllers;
-import records.model.Record;
+import records.model.Records;
 import records.services.RecordsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @RestController
 @RequestMapping("/api/records")
@@ -15,21 +17,22 @@ public class RecordsController {
     private RecordsService recordsService;
 
     @PostMapping("/add")
-    public ResponseEntity<Record> addRecord(@RequestBody Record record) {
-        record.setIdrecords(UUID.randomUUID().toString());
-        Record savedRecord = recordsService.addRecord(record);
+    public ResponseEntity<Records> addRecord(@RequestBody Records record) {
+        record.setRecord_id(UUID.randomUUID().toString());
+        
+        Records savedRecord = recordsService.addRecord(record);
         return ResponseEntity.ok(savedRecord);
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<List<Record>> getRecordsByEmail(@PathVariable String email) {
-        List<Record> records = recordsService.getRecordsByEmail(email);
+    public ResponseEntity<List<Records>> getRecordsByEmail(@PathVariable String email) {
+        List<Records> records = recordsService.getRecordsByEmail(email);
         return ResponseEntity.ok(records);
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<Record> editRecord(@PathVariable String id, @RequestBody Record record) {
-        Record updatedRecord = recordsService.editRecord(id, record);
+    public ResponseEntity<Records> editRecord(@PathVariable String id, @RequestBody Records record) {
+        Records updatedRecord = recordsService.editRecord(id, record);
         return ResponseEntity.ok(updatedRecord);
     }
 

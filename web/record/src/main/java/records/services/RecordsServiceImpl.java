@@ -1,7 +1,7 @@
 package records.services;
 
 
-import records.model.Record;
+import records.model.Records;
 import records.repository.RecordsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,23 +16,23 @@ public class RecordsServiceImpl implements RecordsService {
     private RecordsRepository recordsRepository;
 
     @Override
-    public Record addRecord(Record record) {
+    public Records addRecord(Records record) {
         return recordsRepository.save(record);
     }
 
     @Override
-    public List<Record> getRecordsByEmail(String email) {
+    public List<Records> getRecordsByEmail(String email) {
         return recordsRepository.findByEmail(email);
     }
 
     @Override
-    public Record editRecord(String id, Record record) {
-        Optional<Record> existingRecordOpt = recordsRepository.findById(id);
+    public Records editRecord(String id, Records record) {
+        Optional<Records> existingRecordOpt = recordsRepository.findById(id);
         if (existingRecordOpt.isPresent()) {
-            Record existingRecord = existingRecordOpt.get();
-            existingRecord.setRecordstitle(record.getRecordstitle());
-            existingRecord.setRecordsdescription(record.getRecordsdescription());
-            existingRecord.setPrescriptions(record.getPrescriptions());
+            Records existingRecord = existingRecordOpt.get();
+            existingRecord.setRecord_title(record.getRecord_title());
+            existingRecord.setRecord_description(record.getRecord_description());
+            existingRecord.setPrescription(record.getPrescription());
             existingRecord.setEmail(record.getEmail());
             return recordsRepository.save(existingRecord);
         } else {
