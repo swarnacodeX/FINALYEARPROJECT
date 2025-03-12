@@ -65,7 +65,7 @@ public class UserControllers {
             String newAccessToken = userService.updateAccessToken(email);
             Map<String, String> response = new HashMap<>();
             response.put("email", email);
-            response.put("accessToken", newAccessToken);
+            response.put("accesstoken", newAccessToken);
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);

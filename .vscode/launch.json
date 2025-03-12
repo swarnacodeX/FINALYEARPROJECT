@@ -44,6 +44,16 @@
             "projectName": "demo",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-RecordsApplication<recordid>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "records.RecordsApplication",
+            "projectName": "recordid",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

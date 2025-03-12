@@ -1,6 +1,8 @@
 users\DemoApplication.class
+users\config\CorsConfig$1.class
 users\controller\UserControllers.class
 users\service\UserService.class
 users\repository\UserRepository.class
 users\model\User.class
+users\config\CorsConfig.class
 users\service\UserServiceImpl.class

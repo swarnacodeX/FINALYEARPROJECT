@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import React, { useState, useRef } from "react";
+import { useEffect } from "react";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { useRouter } from "next/navigation";
@@ -13,7 +14,12 @@ export default function Login() {
   const setEmail = useStore((state) => state.setEmail);
   const password = useRef<HTMLInputElement>(null);
   const router = useRouter();
-
+  useEffect(()=>{
+    const token = localStorage.getItem("accesstoken");
+    if (token) {
+      router.push("/?page=home");
+    }
+  })
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -28,16 +34,16 @@ export default function Login() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/user/login",
+        "http://localhost:8081/api/user/login",
         {
           email: email.current?.value,
           password: password.current?.value,
         }
       );
       if (response.status === 200 || response.status === 201) {
-        sessionStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("accesstoken", response.data.accesstoken);
         setEmail(emailValue);
-        router.push("/?route=home"); // Redirect to home page after successful login
+        router.push("/?page=home"); // Redirect to home page after successful login
       } else {
         setLoginError("Login failed. Please try again.");
       }
@@ -94,7 +100,7 @@ export default function Login() {
            dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
           onClick={(e) => {
             e.preventDefault(); // Prevent form submission
-            router.push("/?route=signup"); // Navigate to signup
+            router.push("/?page=signup"); // Navigate to signup
           }}
         >
           Register

@@ -23,7 +23,7 @@ export default function SignUp() {
        && password.current?.value && password.current?.value.length > 0) 
       {
       try {
-        const response = await axios.post("http://localhost:8080/api/user/signup", {
+        const response = await axios.post("http://localhost:8081/api/user/signup", {
           email: email.current?.value,
           firstname: firstname.current?.value,
           lastname: lastname.current?.value,
@@ -32,7 +32,7 @@ export default function SignUp() {
         if (response.status === 200 || response.status === 201) {
           // Save access token and redirect to home
           sessionStorage.setItem("accessToken", response.data.accessToken);
-          router.push("/?route=home");
+          router.push("/?page=home");
         } else {
           setSignuperror("Error while signing up");
         }
@@ -92,7 +92,7 @@ export default function SignUp() {
             ALREADY A USER?
           </p>
           <button
-            onClick={() => router.push("/?route=login")}
+            onClick={() => router.push("/?page=login")}
             className="relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="button"
           >
