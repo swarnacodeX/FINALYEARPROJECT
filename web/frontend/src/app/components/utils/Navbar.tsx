@@ -18,10 +18,10 @@ const Navbar = ({ className }: { className?: string }) => {
     <div className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}>
       <nav className="relative rounded-full border border-transparent
        dark:bg-black dark:border-white/[0.2] bg-white shadow-input flex justify-center space-x-4 px-8 py-6">
-        <NavItem link="/?route=home" item="Home" />
-        <NavItem link="/?route=aipage" item="AI ASSISTANT" />
-        <NavItem link="/?route=healthrecords" item="HEALTH RECORDS" />
-        <NavItem link="/?route=profile" item="PROFILE" />
+        <NavItem link="/?page=home" item="Home" />
+        <NavItem link="/?page=aipage" item="AI ASSISTANT" />
+        <NavItem link="/?page=healthrecords" item="HEALTH RECORDS" />
+        <NavItem link="/?page=profile" item="PROFILE" />
       </nav>
     </div>
   );
