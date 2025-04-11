@@ -45,8 +45,8 @@ export default function HomePage() {
       <button
         onClick={handleLogout}
         className="absolute top-4 right-4 flex items-center px-4 py-2 text-black bg-white 
-         hover:bg-teal-500 rounded-lg shadow-lg focus:outline-none focus:ring-2 
-         focus:ring-black focus:ring-offset-2 transition ease-in-out duration-200"
+         hover:bg-black hover:text-white rounded-lg shadow-lg focus:outline-none focus:ring-2 
+         focus:ring-white focus:ring-offset-2 transition ease-in-out duration-200"
       >
         <IconLogout className="h-5 w-5 mr-2" />
         Logout

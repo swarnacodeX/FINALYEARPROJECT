@@ -27,8 +27,8 @@ export default function Login() {
       setLoginError("Email input is not available.");
       return;
     }
-    const emailValue = email.current.value;
-    if (!emailValue || !password.current) {
+    
+    if (!email.current.value || !password.current) {
       setLoginError("Email and password are required.");
       return;
     }
@@ -42,7 +42,8 @@ export default function Login() {
       );
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem("accesstoken", response.data.accesstoken);
-        setEmail(emailValue);
+        localStorage.setItem("email",email.current.value);
+        setEmail(email.current.value);
         router.push("/?page=home"); // Redirect to home page after successful login
       } else {
         setLoginError("Login failed. Please try again.");

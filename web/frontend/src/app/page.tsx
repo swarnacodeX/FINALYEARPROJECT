@@ -5,7 +5,8 @@ import Login from "@/app/components/pages/Login";
 import HomePage from "@/app/components/pages/Home";
 import SignUp from "@/app/components/pages/SignUp";
 import RecordPage from "@/app/components/pages/HealthRecords";
-
+import ChatBot from "./components/pages/ChatBot";
+import Profile from "./components/pages/Profile";
 export default function Home() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -31,6 +32,8 @@ function HomeWithParams() {
       {route === "login" && <Login />}
       {route === "signup" && <SignUp />}
       {route === "healthrecords" && <RecordPage />}
+      {route === "chatbot" && <ChatBot />}
+      {route==="profile" && <Profile />}
     </div>
   );
 }

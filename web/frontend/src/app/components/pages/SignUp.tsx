@@ -6,7 +6,7 @@ import { Input } from "../../../components/ui/input";
 import { cn } from "@/lib/utils";
 import { IconArrowBigRightLineFilled } from "@tabler/icons-react";
 import axios from "axios";
-
+import { useStore } from "../utils/storeZustand";
 export default function SignUp() {
   const router = useRouter();
   const email = useRef<HTMLInputElement>(null);
@@ -30,8 +30,9 @@ export default function SignUp() {
           password: password.current?.value,
         });
         if (response.status === 200 || response.status === 201) {
-          // Save access token and redirect to home
-          sessionStorage.setItem("accessToken", response.data.accessToken);
+          localStorage.setItem("accesstoken", response.data.accessToken);
+          localStorage.setItem("email", email.current?.value);
+          useStore.setState({ email: email.current?.value });
           router.push("/?page=home");
         } else {
           setSignuperror("Error while signing up");

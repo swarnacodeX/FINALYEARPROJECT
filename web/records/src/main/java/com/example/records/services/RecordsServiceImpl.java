@@ -1,5 +1,4 @@
 package com.example.records.services;
-
 import com.google.api.client.http.AbstractInputStreamContent;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -11,18 +10,15 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.auth.oauth2.GoogleCredentials;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.records.model.Records;
 import com.example.records.repository.RecordsRepository;
-
 import java.io.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class RecordsServiceImpl implements RecordsService {
 

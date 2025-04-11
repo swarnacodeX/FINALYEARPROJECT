@@ -1,5 +1,4 @@
 package com.example.records.controllers;
-
 import com.example.records.model.Records;
 import com.example.records.services.RecordsService;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/records")
+@CrossOrigin(origins = "*") 
 public class RecordsController {
 
     private final RecordsService recordsService;

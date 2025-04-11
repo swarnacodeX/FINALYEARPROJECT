@@ -1,145 +1,158 @@
-import React, { useState } from 'react';
-import { PlusCircle, Edit, Trash2, Download, X } from 'lucide-react';
+"use client";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Edit, Trash2, Download, PlusCircle, XCircle, Search } from "lucide-react";
+import Navbar from "../utils/Navbar";
 
 interface Record {
   id: string;
   name: string;
   description: string;
-  fileUrl: string;
-  fileType: 'pdf' | 'image';
+  file: string;
 }
 
-function App() {
-  const [records, setRecords] = useState<Record[]>([
-    {
-      id: '1',
-      name: 'Medical Report 2024',
-      description: 'Annual health checkup report with detailed blood work analysis',
-      fileUrl: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28',
-      fileType: 'image'
-    },
-    {
-      id: '2',
-      name: 'Vaccination Record',
-      description: 'Complete vaccination history including COVID-19 shots',
-      fileUrl: 'https://images.unsplash.com/photo-1584982751601-97dcc096659c',
-      fileType: 'image'
+const RecordPage = () => {
+  const email = typeof window !== "undefined" ? localStorage.getItem("email") || "" : "";
+  const [records, setRecords] = useState<Record[]>([]);
+  const [filteredRecords, setFilteredRecords] = useState<Record[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [newRecord, setNewRecord] = useState({ name: "", description: "", file: null as File | null });
+
+  useEffect(() => {
+    const fetchRecords = async () => {
+      if (!email) return;
+      try {
+        const response = await axios.get(`http://localhost:8001/api/records/${email}`);
+        const formattedRecords = response.data.map((record: any) => ({
+          id: record.record_id,
+          name: record.record_title,
+          description: record.record_description,
+          file: record.file_link,
+        }));
+        setRecords(formattedRecords);
+        setFilteredRecords(formattedRecords);
+      } catch (err) {
+        setError("Failed to load records.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRecords();
+  }, [email]);
+
+  useEffect(() => {
+    setFilteredRecords(
+      records.filter(record => record.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  }, [searchQuery, records]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`http://localhost:8001/api/records/${id}`);
+      setRecords(records.filter((record) => record.id !== id));
+    } catch {
+      alert("Failed to delete record.");
     }
-  ]);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newRecord, setNewRecord] = useState({ name: '', description: '', fileUrl: '', fileType: 'image' as const });
-
-  const handleAddRecord = () => {
-    setRecords([...records, { ...newRecord, id: Date.now().toString() }]);
-    setIsModalOpen(false);
-    setNewRecord({ name: '', description: '', fileUrl: '', fileType: 'image' });
   };
 
-  const handleDelete = (id: string) => {
-    setRecords(records.filter(record => record.id !== id));
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newRecord.description.split(" ").length > 50) {
+      alert("Description should not exceed 50 words.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("record_title", newRecord.name);
+    formData.append("record_description", newRecord.description);
+    if (newRecord.file) formData.append("file", newRecord.file);
+    try {
+      const response = await axios.post("http://localhost:8001/api/records/add", formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const newRecordData = {
+        id: response.data.record_id,
+        name: response.data.record_title,
+        description: response.data.record_description,
+        file: response.data.file_link,
+      };
+      setRecords((prevRecords) => [...prevRecords, newRecordData]);
+      setShowForm(false);
+      setNewRecord({ name: "", description: "", file: null });
+    } catch {
+      alert("Failed to add record.");
+    }
   };
+
+  if (loading) return <p className="text-center text-gray-600">Loading records...</p>;
+  if (error) return <p className="text-center text-red-600">{error}</p>;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Medical Records</h1>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <PlusCircle size={20} />
-            New Record
-          </button>
-        </div>
+    <div className="container mx-auto p-4 sm:p-6 max-w-6xl">
+      <Navbar />
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-6">
+        <h2 className="text-2xl sm:text-3xl font-bold">Your Records</h2>
+        <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-black text-white px-3 py-2 rounded hover:bg-white hover:text-black transition duration-300">
+          <PlusCircle size={18} /> New Record
+        </button>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {records.map((record) => (
-            <div
-              key={record.id}
-              className="bg-white rounded-xl shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300 relative group"
-            >
-              <div className="aspect-video w-full overflow-hidden">
-                <img
-                  src={record.fileUrl}
-                  alt={record.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{record.name}</h3>
-                <p className="text-gray-600">{record.description}</p>
-              </div>
-              <div className="absolute top-0 right-0 p-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-100">
-                  <Edit size={18} className="text-blue-600" />
-                </button>
-                <button 
-                  onClick={() => handleDelete(record.id)}
-                  className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-100"
-                >
-                  <Trash2 size={18} className="text-red-600" />
-                </button>
-                <button className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-100">
-                  <Download size={18} className="text-green-600" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* Search Bar & Search Button in a Single Row */}
+      <div className="flex items-center gap-2 mt-10 w-full sm:w-1/2 mx-auto">
+        <input
+          type="text"
+          placeholder="Search records..."
+          className="p-2 border rounded w-full"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button className="p-2 bg-gray-200 rounded hover:bg-gray-300">
+          <Search size={20} className="text-gray-600" />
+        </button>
+      </div>
 
-        {/* Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Add New Record</h2>
-                <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-gray-700">
-                  <X size={24} />
-                </button>
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                  <input
-                    type="text"
-                    value={newRecord.name}
-                    onChange={(e) => setNewRecord({ ...newRecord, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <textarea
-                    value={newRecord.description}
-                    onChange={(e) => setNewRecord({ ...newRecord, description: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows={3}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">File URL</label>
-                  <input
-                    type="text"
-                    value={newRecord.fileUrl}
-                    onChange={(e) => setNewRecord({ ...newRecord, fileUrl: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <button
-                  onClick={handleAddRecord}
-                  className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Add Record
-                </button>
-              </div>
+      {showForm && (
+        <div className="mt-4 bg-gray-100 p-4 rounded shadow-md w-full max-w-md mx-auto">
+          <div className="flex justify-between">
+            <h3 className="text-lg font-bold">Add Record</h3>
+            <button onClick={() => setShowForm(false)} className="text-red-500">
+              <XCircle size={20} />
+            </button>
+          </div>
+          <form onSubmit={handleSubmit} className="mt-2 space-y-2">
+            <input type="text" placeholder="Name" className="w-full p-2 border rounded" value={newRecord.name}
+             onChange={(e) => setNewRecord({ ...newRecord, name: e.target.value })} required />
+            <textarea placeholder="Description (Max 50 words)" className="w-full p-2 border rounded" value={newRecord.description} 
+            onChange={(e) => setNewRecord({ ...newRecord, description: e.target.value })} required />
+            <input type="file" className="w-full p-2" onChange={(e) => setNewRecord({ ...newRecord, file: e.target.files?.[0] || null })} required />
+            <button type="submit" className="bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600 w-full">Submit</button>
+          </form>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+        {filteredRecords.map((record) => (
+          <div key={record.id} className="bg-white rounded shadow p-4 hover:shadow-lg">
+            <h3 className="text-lg font-semibold">{record.name}</h3>
+            <p className="text-sm text-gray-600">{record.description}</p>
+            <div className="flex justify-between items-center mt-2">
+              <a href={record.file} target="_blank" rel="noopener noreferrer" className="text-blue-500 text-sm hover:underline">View</a>
+              <a href={record.file} download className="p-1 bg-green-500 text-white rounded hover:bg-green-600">
+                <Download size={16} />
+              </a>
+              <button onClick={() => handleDelete(record.id)} className="p-1 bg-white rounded shadow hover:bg-gray-100">
+                <Trash2 size={16} className="text-red-600" />
+              </button>
             </div>
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default RecordPage;
