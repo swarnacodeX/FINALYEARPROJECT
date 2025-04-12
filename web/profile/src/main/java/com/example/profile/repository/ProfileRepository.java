@@ -1,5 +1,7 @@
 package com.example.profile.repository;
 
-public class ProfileRepository {
-    
+import com.example.profile.model.Profile;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProfileRepository extends JpaRepository<Profile, String> {
 }
