@@ -34,7 +34,7 @@ export default function Profile() {
 
       try {
         const res = await axios.post(
-          "http://localhost:8001/api/user/profiledata",
+          "http://localhost:8002/api/user/profiledata",
           { email },
           {
             headers: {
@@ -62,7 +62,7 @@ export default function Profile() {
 
     try {
       const res = await axios.put(
-        "http://localhost:8001/api/user/updateprofile",
+        "http://localhost:8002/api/user/updateprofile",
         formData,
         {
           headers: {

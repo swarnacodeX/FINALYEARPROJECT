@@ -25,7 +25,7 @@ const RecordPage = () => {
     const fetchRecords = async () => {
       if (!email) return;
       try {
-        const response = await axios.get(`http://localhost:8001/api/records/${email}`);
+        const response = await axios.get(`http://localhost:8003/api/records/${email}`);
         const formattedRecords = response.data.map((record: any) => ({
           id: record.record_id,
           name: record.record_title,
@@ -51,7 +51,7 @@ const RecordPage = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:8001/api/records/${id}`);
+      await axios.delete(`http://localhost:8003/api/records/${id}`);
       setRecords(records.filter((record) => record.id !== id));
     } catch {
       alert("Failed to delete record.");
@@ -70,7 +70,7 @@ const RecordPage = () => {
     formData.append("record_description", newRecord.description);
     if (newRecord.file) formData.append("file", newRecord.file);
     try {
-      const response = await axios.post("http://localhost:8001/api/records/add", formData, {
+      const response = await axios.post("http://localhost:8003/api/records/add", formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
