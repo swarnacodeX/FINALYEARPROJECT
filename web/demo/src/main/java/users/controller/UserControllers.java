@@ -66,6 +66,8 @@ public class UserControllers {
             Map<String, String> response = new HashMap<>();
             response.put("email", email);
             response.put("accesstoken", newAccessToken);
+            response.put("firstname",user.getFirstname());
+            response.put("lastname",user.getLastname());
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);

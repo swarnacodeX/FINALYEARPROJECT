@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/profile")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProfileController {
 
     @Autowired
@@ -16,4 +17,11 @@ public class ProfileController {
     public Profile upsertProfile(@RequestBody Profile profile) {
         return profileService.upsertProfile(profile);
     }
+
+    // Updated fetchProfile to accept the email directly as a @RequestParam
+    @GetMapping("/fetch")
+public Profile fetchProfile(@RequestParam String email) {
+    return profileService.fetchProfile(email);
+}
+
 }

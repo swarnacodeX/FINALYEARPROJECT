@@ -1,48 +1,52 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { motion } from "framer-motion";
+import Navbar from "../utils/Navbar";
+import image from '../utils/user.png'
 interface UserProfile {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   avatar?: string;
-  bio?: string;
   age?: string;
   weight?: string;
-  bloodGroup?: string;
+  height?: string;
+  bloodgroup?: string;
   password?: string;
 }
 
 export default function Profile() {
   const [user, setUser] = useState<UserProfile>({
-    name: "",
-    email: "",
-    avatar: "",
-    bio: "",
+    firstName: localStorage.getItem("firstname") || "",
+    lastName: localStorage.getItem("lastname") || "",
+    email: localStorage.getItem("email") || "",
     age: "",
     weight: "",
-    bloodGroup: "",
+    height: "",
+    bloodgroup: "",
   });
 
+  const [activeSection, setActiveSection] = useState<"userdata" | "settings">("userdata");
   const [editUserData, setEditUserData] = useState(false);
   const [formData, setFormData] = useState<UserProfile>(user);
+  const [editFirstName, setEditFirstName] = useState(false);
+  const [editLastName, setEditLastName] = useState(false);
+  const [editPassword, setEditPassword] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       const email = localStorage.getItem("email");
       const accesstoken = localStorage.getItem("accesstoken");
-
+    
       try {
-        const res = await axios.post(
-          "http://localhost:8002/api/user/profiledata",
-          { email },
+        const res = await axios.get(
+          "http://localhost:8002/api/profile/fetch",
           {
-            headers: {
-              Authorization: `Bearer ${accesstoken}`,
-            },
+            params:{email}
           }
+    
         );
-
         setUser(res.data);
         setFormData(res.data);
       } catch (error) {
@@ -59,121 +63,290 @@ export default function Profile() {
 
   const handleSave = async () => {
     const accesstoken = localStorage.getItem("accesstoken");
-
     try {
       const res = await axios.put(
-        "http://localhost:8002/api/user/updateprofile",
+        "http://localhost:8002/api/profile",
         formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accesstoken}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${accesstoken}` } }
       );
       setUser(res.data);
       setEditUserData(false);
+      setEditFirstName(false);
+      setEditLastName(false);
+      setEditPassword(false);
     } catch (error) {
       console.error("Failed to save profile:", error);
     }
   };
 
+  // Cancel handlers for each field
+  const handleCancelFirstName = () => {
+    setEditFirstName(false);
+    setFormData({ ...formData, firstName: user.firstName });
+  };
+
+  const handleCancelLastName = () => {
+    setEditLastName(false);
+    setFormData({ ...formData, lastName: user.lastName });
+  };
+
+  const handleCancelPassword = () => {
+    setEditPassword(false);
+    setFormData({ ...formData, password: "" });
+  };
+
   return (
-    <div className="flex justify-center bg-gray-100 min-h-screen py-10">
-      <div className="w-[800px] bg-white border border-gray-300 rounded-xl p-10 shadow-xl">
-        {/* Profile Header */}
-        <div className="text-center mb-10">
-          <img
-            src={user.avatar || "/default-avatar.png"}
-            alt="Avatar"
-            className="w-28 h-28 rounded-full mx-auto border-4 border-blue-500 object-cover"
-          />
-          <h2 className="text-2xl font-bold mt-4">{user.name || "--"}</h2>
-          <p className="text-gray-600">{user.email || "--"}</p>
-          <p className="text-gray-700 mt-2">{user.bio || "--"}</p>
+    <div className="min-h-screen bg-gray-100 pb-10 pt-32 sm:pt-40">
+      <Navbar />
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8"
+      >
+        <div className="rounded-xl bg-white p-6 shadow-xl sm:p-8 md:p-10">
+          <div className="mb-8 flex border-b">
+            <button
+              onClick={() => setActiveSection("userdata")}
+              className={`mr-2 flex-1 px-4 py-2 text-sm sm:text-base ${
+                activeSection === "userdata" ? "border-b-2 border-black text-gray-900" : "text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              User Data
+            </button>
+            <button
+              onClick={() => setActiveSection("settings")}
+              className={`flex-1 px-4 py-2 text-sm sm:text-base ${
+                activeSection === "settings" ? "border-b-2 border-black text-gray-900" : "text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              Settings
+            </button>
+          </div>
+
+          <div className="relative overflow-hidden">
+            {/* User Data Section */}
+            <motion.div
+              className={`${activeSection === "userdata" ? "translate-x-0" : "-translate-x-full"}`}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <section className="mb-12">
+                <div className="text-center mb-8">
+                  <motion.img
+                    src={image.src}
+                    alt="Avatar"
+                    className="mx-auto h-20 w-20 rounded-full border-4 border-black object-cover sm:h-28 sm:w-28"
+                  />
+                  <h2 className="mt-4 text-xl font-bold sm:text-2xl text-gray-900">
+                    {user.firstName || "--"} {user.lastName || "--"}
+                  </h2>
+                  <p className="text-gray-600 sm:text-lg">{user.email || "--"}</p>
+                </div>
+
+                <div className="mb-4 flex flex-col items-center justify-between sm:flex-row">
+                  <h3 className="mb-4 text-lg font-semibold sm:mb-0 sm:text-xl text-gray-900">
+                    Personal Information
+                  </h3>
+                  <button
+                    onClick={() => setEditUserData(!editUserData)}
+                    className="w-full px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 sm:w-auto sm:py-1 sm:text-base"
+                  >
+                    {editUserData ? "Cancel" : "Edit"}
+                  </button>
+                </div>
+
+                <div className="space-y-4 mb-4">
+                  <InfoField label="Age" value={user.age} />
+                  <InfoField label="Weight (kg)" value={user.weight} />
+                  <InfoField label="Height (cm)" value={user.height} />
+                  <InfoField label="Blood Group" value={user.bloodgroup} />
+                </div>
+
+                {editUserData && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="rounded-lg border bg-gray-50 p-4"
+                  >
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <EditableField label="Age" name="age" value={formData.age} onChange={handleChange} />
+                      <EditableField label="Weight (kg)" name="weight" value={formData.weight} onChange={handleChange} />
+                      <EditableField label="Height (cm)" name="height" value={formData.height} onChange={handleChange} />
+                      <EditableField label="Blood Group" name="bloodGroup" value={formData.bloodgroup} onChange={handleChange} />
+                    </div>
+                    <button
+                      onClick={handleSave}
+                      className="mt-4 w-full px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 sm:w-auto"
+                    >
+                      Save Changes
+                    </button>
+                  </motion.div>
+                )}
+              </section>
+            </motion.div>
+
+            {/* Settings Section */}
+            <motion.div
+              className={`absolute top-0 left-0 w-full ${
+                activeSection === "settings" ? "translate-x-0" : "translate-x-full"
+              }`}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <section>
+                <h3 className="mb-6 text-lg font-semibold sm:text-xl text-gray-900">Account Settings</h3>
+
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    {/* First Name Field */}
+                    <div className="flex flex-col gap-2">
+                      <label className="block text-sm font-medium text-gray-900">First Name</label>
+                      {!editFirstName ? (
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">{user.firstName || "--"}</span>
+                          <button
+                            onClick={() => setEditFirstName(true)}
+                            className="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200 text-sm"
+                          >
+                            Change
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            name="firstName"
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            className="flex-1 rounded-lg border p-2 text-sm"
+                          />
+                          <button
+                            onClick={handleSave}
+                            className="px-3 py-1 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={handleCancelFirstName}
+                            className="px-3 py-1 bg-gray-100 text-gray-900 rounded-lg hover:bg-gray-200 text-sm"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Last Name Field */}
+                    <div className="flex flex-col gap-2">
+                      <label className="block text-sm font-medium text-gray-900">Last Name</label>
+                      {!editLastName ? (
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">{user.lastName || "--"}</span>
+                          <button
+                            onClick={() => setEditLastName(true)}
+                            className="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200 text-sm"
+                          >
+                            Change
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            className="flex-1 rounded-lg border p-2 text-sm"
+                          />
+                          <button
+                            onClick={handleSave}
+                            className="px-3 py-1 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={handleCancelLastName}
+                            className="px-3 py-1 bg-gray-100 text-gray-900 rounded-lg hover:bg-gray-200 text-sm"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Password Field */}
+                    <div className="flex flex-col gap-2">
+                      <label className="block text-sm font-medium text-gray-900">Password</label>
+                      {!editPassword ? (
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">••••••••</span>
+                          <button
+                            onClick={() => setEditPassword(true)}
+                            className="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200 text-sm"
+                          >
+                            Change
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <input
+                            type="password"
+                            name="password"
+                            onChange={handleChange}
+                            className="flex-1 rounded-lg border p-2 text-sm"
+                            placeholder="New password"
+                          />
+                          <button
+                            onClick={handleSave}
+                            className="px-3 py-1 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={handleCancelPassword}
+                            className="px-3 py-1 bg-gray-100 text-gray-900 rounded-lg hover:bg-gray-200 text-sm"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </motion.div>
+          </div>
         </div>
-
-        {/* SECTION 1: USER DATA */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-semibold">User Data</h3>
-            {!editUserData ? (
-              <button
-                onClick={() => setEditUserData(true)}
-                className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Edit
-              </button>
-            ) : (
-              <button
-                onClick={handleSave}
-                className="px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                Save
-              </button>
-            )}
-          </div>
-          <div className="space-y-4">
-            {renderField("Age", "age", formData.age, editUserData, handleChange)}
-            {renderField("Weight (kg)", "weight", formData.weight, editUserData, handleChange)}
-            {renderField("Blood Group", "bloodGroup", formData.bloodGroup, editUserData, handleChange)}
-            {renderField("Bio", "bio", formData.bio, editUserData, handleChange)}
-          </div>
-        </section>
-
-        {/* SECTION 2: PRIVACY SETTINGS */}
-        <section>
-          <h3 className="text-xl font-semibold mb-4">Privacy Settings</h3>
-
-          {/* Change Username */}
-          <div className="mb-6">
-            <label className="block mb-1 font-medium">Change Username</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md"
-            />
-          </div>
-
-          {/* Change Password */}
-          <div className="mb-6">
-            <label className="block mb-1 font-medium">New Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter new password"
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md"
-            />
-          </div>
-        </section>
-      </div>
+      </motion.div>
     </div>
   );
 }
 
-function renderField(
-  label: string,
-  name: string,
-  value: string | undefined,
-  editable: boolean,
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-) {
-  return (
-    <div>
-      <label className="block mb-1 font-medium">{label}</label>
-      {editable ? (
-        <input
-          type="text"
-          name={name}
-          value={value || ""}
-          onChange={onChange}
-          className="w-full px-3 py-2 border rounded-md"
-        />
-      ) : (
-        <p className="text-gray-700">{value || "--"}</p>
-      )}
-    </div>
-  );
-}
+const InfoField = ({ label, value }: { label: string; value?: string }) => (
+  <div className="flex flex-col space-y-1 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+    <span className="font-medium text-gray-900">{label}</span>
+    <span className="text-gray-600">{value || "--"}</span>
+  </div>
+);
+
+const EditableField = ({
+  label,
+  name,
+  value,
+  onChange,
+}: {
+  label: string;
+  name: string;
+  value?: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) => (
+  <div className="space-y-1">
+    <label className="block text-sm font-medium text-gray-900 sm:text-base">{label}</label>
+    <input
+      type="text"
+      name={name}
+      value={value || ""}
+      onChange={onChange}
+      className="w-full rounded-lg border p-2 text-sm sm:text-base text-gray-900"
+    />
+  </div>
+);

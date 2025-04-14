@@ -32,7 +32,10 @@ export default function HomePage() {
   }, [router]); // Add router as a dependency
 
   const handleLogout = () => {
-    localStorage.removeItem("accesstoken"); // Clear token on logout
+    localStorage.removeItem("accesstoken");
+    localStorage.removeItem("email");
+    localStorage.removeItem("firstname");
+    localStorage.removeItem("lastname"); // Clear token on logout
     setAccessToken(null);
     router.push("/?page=login"); // Redirect to login
   };

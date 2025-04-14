@@ -34,7 +34,7 @@ export default function Login() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:8081/api/user/login",
+        "http://localhost:8001/api/user/login",
         {
           email: email.current?.value,
           password: password.current?.value,
@@ -43,6 +43,8 @@ export default function Login() {
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem("accesstoken", response.data.accesstoken);
         localStorage.setItem("email",email.current.value);
+        localStorage.setItem("firstname",response.data.firstname);
+        localStorage.setItem("lastname",response.data.lastname);
         setEmail(email.current.value);
         router.push("/?page=home"); // Redirect to home page after successful login
       } else {

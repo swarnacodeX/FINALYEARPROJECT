@@ -16,18 +16,13 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile upsertProfile(Profile profile) {
-        Optional<Profile> existingProfile = profileRepository.findById(profile.getEmail());
-
-        if (existingProfile.isPresent()) {
-            Profile updated = existingProfile.get();
-            updated.setAge(profile.getAge());
-            updated.setWeight(profile.getWeight());
-            updated.setHeight(profile.getHeight());
-            updated.setBloodgroup(profile.getBloodgroup());
-            updated.setAccesstoken(profile.getAccesstoken());
-            return profileRepository.save(updated);
-        } else {
-            return profileRepository.save(profile);
-        }
+        return profileRepository.save(profile);
     }
+
+    @Override
+public Profile fetchProfile(String email) {
+    return profileRepository.findById(email)
+            .orElseThrow(() -> new RuntimeException("Profile not found with email: " + email));
+}
+
 }

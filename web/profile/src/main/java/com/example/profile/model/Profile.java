@@ -25,6 +25,5 @@ public class Profile {
     @Column(name="bloodgroup", nullable=false)
     private String bloodgroup;
 
-    @Column(name = "accesstoken", nullable = false)
-    private String accesstoken;
+    
 }
