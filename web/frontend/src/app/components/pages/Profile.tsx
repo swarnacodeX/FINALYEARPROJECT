@@ -33,10 +33,11 @@ export default function Profile() {
   const [editFirstName, setEditFirstName] = useState(false);
   const [editLastName, setEditLastName] = useState(false);
   const [editPassword, setEditPassword] = useState(false);
-
+  const firstname=localStorage.getItem("firstname");
+  const lastname=localStorage.getItem("lastname");
+  const email=localStorage.getItem("email");
   useEffect(() => {
     const fetchUser = async () => {
-      const email = localStorage.getItem("email");
       const accesstoken = localStorage.getItem("accesstoken");
     
       try {
@@ -138,9 +139,9 @@ export default function Profile() {
                     className="mx-auto h-20 w-20 rounded-full border-4 border-black object-cover sm:h-28 sm:w-28"
                   />
                   <h2 className="mt-4 text-xl font-bold sm:text-2xl text-gray-900">
-                    {user.firstName || "--"} {user.lastName || "--"}
+                    {firstname} {lastname}
                   </h2>
-                  <p className="text-gray-600 sm:text-lg">{user.email || "--"}</p>
+                  <p className="text-gray-600 sm:text-lg">{email || "--"}</p>
                 </div>
 
                 <div className="mb-4 flex flex-col items-center justify-between sm:flex-row">

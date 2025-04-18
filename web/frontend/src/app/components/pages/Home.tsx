@@ -11,13 +11,16 @@ const items = [
     title: "STORE MEDICAL RECORDS AND PRESCRIPTIONS",
     description: "Don't search your cupboard, instead, visit us",
     icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
+    imageUrl: "../utils/Revolutionizing US Patient Care with Health Technologies_.jpg", // ← image path (ensure it's in /public)
   },
   {
     title: "Get AI Assistance",
     description: "Dive into the intelligence of technology",
     icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
+    imageUrl: "/images/ai-bg.jpg", // ← another image
   },
 ];
+
 
 export default function HomePage() {
   const router = useRouter();
@@ -56,15 +59,16 @@ export default function HomePage() {
       </button>
 
       <BentoGrid className="max-w-4xl mx-auto mt-32">
-        {items.map((item, i) => (
-          <BentoGridItem
-            key={i}
-            title={item.title}
-            description={item.description}
-            icon={item.icon}
-            className={i === 3 || i === 6 ? "md:col-span-2" : ""}
-          />
-        ))}
+      {items.map((item, i) => (
+  <BentoGridItem
+    key={i}
+    title={item.title}
+    description={item.description}
+    icon={item.icon}
+    imageUrl={item.imageUrl} // ← pass this
+    className={i === 3 || i === 6 ? "md:col-span-2" : ""}
+  />
+))}
       </BentoGrid>
     </div>
   );

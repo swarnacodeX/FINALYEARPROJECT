@@ -21,8 +21,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
 public Profile fetchProfile(String email) {
-    return profileRepository.findById(email)
-            .orElseThrow(() -> new RuntimeException("Profile not found with email: " + email));
+    return profileRepository.findById(email).orElse(null);
+        
 }
 
 }
