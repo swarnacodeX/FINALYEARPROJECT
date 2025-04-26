@@ -20,12 +20,11 @@ const RecordPage = () => {
   const [showForm, setShowForm] = useState(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
-
   const nameRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const [formResetKey, setFormResetKey] = useState(Date.now()); // To reset file input
+  const [formResetKey, setFormResetKey] = useState(Date.now());
 
   // Fetch records
   useEffect(() => {
@@ -106,109 +105,119 @@ const RecordPage = () => {
   }, [email]);
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 max-w-6xl">
-      <Navbar />
+    <div className="min-h-screen" style={{
+      backgroundImage: "url('/background.jpg')",
+      backgroundSize: "cover",
+      backgroundAttachment: "fixed",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+    }}>
+      {/* Semi-transparent overlay */}
+      <div className="min-h-screen bg-black bg-opacity-50">
+        <div className="container mx-auto p-4 sm:p-6 max-w-6xl">
+          <Navbar />
 
-      <div className="mt-4 text-center">
-        {loading && <p className="text-gray-600">Loading records...</p>}
-        {error && <p className="text-red-600">{error}</p>}
-      </div>
+          <div className="mt-4 text-center">
+            {loading && <p className="text-gray-300">Loading records...</p>}
+            {error && <p className="text-red-400">{error}</p>}
+          </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center -mt-2 gap-6">
-        <h2 className="text-2xl sm:text-3xl font-bold">Your Records</h2>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 bg-black text-white px-3 py-2 rounded hover:bg-white hover:text-black transition duration-300"
-        >
-          <PlusCircle size={18} /> New Record
-        </button>
-      </div>
-
-      {/* Search */}
-      <div className="flex items-center gap-2 mt-10 w-full sm:w-1/2 mx-auto">
-        <input
-          ref={searchRef}
-          type="text"
-          placeholder="Search records..."
-          className="p-2 border rounded w-full"
-          onChange={() => {
-            // force update to trigger useMemo when using ref
-            setRecords([...records]);
-          }}
-        />
-        <button className="p-2 bg-gray-200 rounded hover:bg-gray-300">
-          <Search size={20} className="text-gray-600" />
-        </button>
-      </div>
-
-      {/* Form */}
-      {showForm && (
-        <div className="mt-4 bg-gray-100 p-4 rounded shadow-md w-full max-w-md mx-auto">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-bold">Add Record</h3>
-            <button onClick={() => setShowForm(false)} className="text-red-500">
-              <XCircle size={20} />
+          <div className="flex flex-col sm:flex-row justify-between items-center -mt-2 gap-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white">Your Records</h2>
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center gap-2 bg-white text-black px-3 py-2 rounded hover:bg-black hover:text-white transition duration-300"
+            >
+              <PlusCircle size={18} /> New Record
             </button>
           </div>
-          <form onSubmit={handleSubmit} className="mt-2 space-y-3">
+
+          {/* Search */}
+          <div className="flex items-center gap-2 mt-10 w-full sm:w-1/2 mx-auto">
             <input
-              ref={nameRef}
+              ref={searchRef}
               type="text"
-              placeholder="Name"
-              className="w-full p-2 border rounded"
-              required
+              placeholder="Search records..."
+              className="p-2 border rounded w-full bg-white bg-opacity-90"
+              onChange={() => {
+                setRecords([...records]);
+              }}
             />
-            <textarea
-              ref={descRef}
-              placeholder="Description (Max 50 words)"
-              className="w-full p-2 border rounded"
-              required
-            />
-            <input
-              key={formResetKey}
-              ref={fileRef}
-              type="file"
-              className="w-full p-2"
-              required
-            />
-            <button type="submit" className="bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600 w-full">
-              Submit
+            <button className="p-2 bg-gray-200 rounded hover:bg-gray-300">
+              <Search size={20} className="text-gray-600" />
             </button>
-          </form>
-        </div>
-      )}
-
-      {/* Record Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-        {filteredRecords.map((record) => (
-          <div key={record.id} className="bg-white rounded shadow p-4 hover:shadow-lg">
-            <h3 className="text-lg font-semibold">{record.name}</h3>
-            <p className="text-sm text-gray-600">{record.description}</p>
-            <div className="flex justify-between items-center mt-2">
-              <a
-                href={record.file}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 text-sm hover:underline"
-              >
-                View
-              </a>
-              <a
-                href={record.file}
-                download
-                className="p-1 bg-green-500 text-white rounded hover:bg-green-600"
-              >
-                <Download size={16} />
-              </a>
-              <button
-                onClick={() => handleDelete(record.id)}
-                className="p-1 bg-white rounded shadow hover:bg-gray-100"
-              >
-                <Trash2 size={16} className="text-red-600" />
-              </button>
-            </div>
           </div>
-        ))}
+
+          {/* Form */}
+          {showForm && (
+            <div className="mt-4 bg-white bg-opacity-90 p-4 rounded shadow-md w-full max-w-md mx-auto">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-bold">Add Record</h3>
+                <button onClick={() => setShowForm(false)} className="text-red-500">
+                  <XCircle size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleSubmit} className="mt-2 space-y-3">
+                <input
+                  ref={nameRef}
+                  type="text"
+                  placeholder="Name"
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <textarea
+                  ref={descRef}
+                  placeholder="Description (Max 50 words)"
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <input
+                  key={formResetKey}
+                  ref={fileRef}
+                  type="file"
+                  className="w-full p-2"
+                  required
+                />
+                <button type="submit" className="bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600 w-full">
+                  Submit
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* Record Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+            {filteredRecords.map((record) => (
+              <div key={record.id} className="bg-white bg-opacity-90 rounded shadow p-4 hover:shadow-lg transition-shadow">
+                <h3 className="text-lg font-semibold">{record.name}</h3>
+                <p className="text-sm text-gray-600">{record.description}</p>
+                <div className="flex justify-between items-center mt-2">
+                  <a
+                    href={record.file}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 text-sm hover:underline"
+                  >
+                    View
+                  </a>
+                  <a
+                    href={record.file}
+                    download
+                    className="p-1 bg-green-500 text-white rounded hover:bg-green-600"
+                  >
+                    <Download size={16} />
+                  </a>
+                  <button
+                    onClick={() => handleDelete(record.id)}
+                    className="p-1 bg-white rounded shadow hover:bg-gray-100"
+                  >
+                    <Trash2 size={16} className="text-red-600" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

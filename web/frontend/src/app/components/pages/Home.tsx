@@ -1,26 +1,24 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BentoGrid, BentoGridItem } from "../../../components/ui/bento-grid"; // Adjust import paths
+import { BentoGrid, BentoGridItem } from "../../../components/ui/bento-grid";
 import Navbar from "../utils/Navbar";
 import { IconClipboardCopy, IconFileBroken, IconLogout } from "@tabler/icons-react";
 
-// Sample items for BentoGrid
 const items = [
   {
     title: "STORE MEDICAL RECORDS AND PRESCRIPTIONS",
     description: "Don't search your cupboard, instead, visit us",
     icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
-    imageUrl: "../utils/Revolutionizing US Patient Care with Health Technologies_.jpg", // ← image path (ensure it's in /public)
+    imageUrl: "../utils/Revolutionizing US Patient Care with Health Technologies_.jpg",
   },
   {
     title: "Get AI Assistance",
     description: "Dive into the intelligence of technology",
     icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
-    imageUrl: "/images/ai-bg.jpg", // ← another image
+    imageUrl: "/images/ai-bg.jpg",
   },
 ];
-
 
 export default function HomePage() {
   const router = useRouter();
@@ -30,46 +28,57 @@ export default function HomePage() {
     const token = localStorage.getItem("accesstoken");
     setAccessToken(token);
     if (!token) {
-      router.push("/?page=login"); // Fix query parameter
+      router.push("/?page=login");
     }
-  }, [router]); // Add router as a dependency
+  }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem("accesstoken");
     localStorage.removeItem("email");
     localStorage.removeItem("firstname");
-    localStorage.removeItem("lastname"); // Clear token on logout
+    localStorage.removeItem("lastname");
     setAccessToken(null);
-    router.push("/?page=login"); // Redirect to login
+    router.push("/?page=login");
   };
 
   return (
-    <div>
-      <Navbar />
+    <div className="min-h-screen" style={{
+      backgroundImage: "url('/background.jpg')",
+      backgroundSize: "cover",
+      backgroundAttachment: "fixed",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+    }}>
+      {/* Semi-transparent overlay */}
+      <div className="min-h-screen bg-black bg-opacity-50">
+        <Navbar />
 
-      {/* Logout Button */}
-      <button
-        onClick={handleLogout}
-        className="absolute top-4 right-4 flex items-center px-4 py-2 text-black bg-white 
-         hover:bg-black hover:text-white rounded-lg shadow-lg focus:outline-none focus:ring-2 
-         focus:ring-white focus:ring-offset-2 transition ease-in-out duration-200"
-      >
-        <IconLogout className="h-5 w-5 mr-2" />
-        Logout
-      </button>
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="fixed top-4 right-4 z-50 flex items-center px-4 py-2 text-black bg-white 
+          hover:bg-black hover:text-white rounded-lg shadow-lg focus:outline-none focus:ring-2 
+          focus:ring-white focus:ring-offset-2 transition ease-in-out duration-200"
+        >
+          <IconLogout className="h-5 w-5 mr-2" />
+          Logout
+        </button>
 
-      <BentoGrid className="max-w-4xl mx-auto mt-32">
-      {items.map((item, i) => (
-  <BentoGridItem
-    key={i}
-    title={item.title}
-    description={item.description}
-    icon={item.icon}
-    imageUrl={item.imageUrl} // ← pass this
-    className={i === 3 || i === 6 ? "md:col-span-2" : ""}
-  />
-))}
-      </BentoGrid>
+        <div className="container mx-auto px-4 py-32">
+          <BentoGrid className="max-w-4xl mx-auto">
+            {items.map((item, i) => (
+              <BentoGridItem
+                key={i}
+                title={item.title}
+                description={item.description}
+                icon={item.icon}
+                imageUrl={item.imageUrl}
+                className={i === 3 || i === 6 ? "md:col-span-2" : ""}
+              />
+            ))}
+          </BentoGrid>
+        </div>
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import bgImage from "./navbar.jpg"; // Make sure this image exists in the same folder
+import bgImage from "../../../../public/navbar.png"; // Make sure this image exists in the same folder
 
 const transition = {
   type: "spring",
@@ -20,7 +20,7 @@ const Navbar = ({ className }: { className?: string }) => {
   return (
     <div className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}>
       
-      <div className="absolute inset-0 z-[-1] rounded-full overflow-hidden">
+      <div className="absolute inset-0 z-[-1] rounded-3xl overflow-hidden">
         <Image
           src={bgImage}
           alt="Navbar background"
@@ -33,7 +33,7 @@ const Navbar = ({ className }: { className?: string }) => {
 
       {/* Navbar Content */}
       <nav
-        className="relative rounded-full border border-transparent dark:border-white/[0.2] 
+        className="relative rounded-3xl border border-transparent dark:border-white/[0.2] 
         shadow-input flex justify-center space-x-4 px-8 py-6 backdrop-blur-md bg-black/30"
       >
         <NavItem link="/?page=home" item="HOME" />
