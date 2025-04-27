@@ -4,6 +4,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import Navbar from "../utils/Navbar";
 import image from '../utils/user.png'
+import medai from '../../../../public/WELCOME.png'; // Import the image
 
 interface UserProfile {
   firstName: string;
@@ -103,7 +104,11 @@ export default function Profile() {
     }}>
       <div className="min-h-screen bg-black bg-opacity-50 pb-10 pt-32 sm:pt-40">
         <Navbar />
-        
+        <img
+        src={medai.src}
+        alt="Welcome"
+        className="absolute top-4 left-4 w-64 h-32" // Adjust size as needed
+      />
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

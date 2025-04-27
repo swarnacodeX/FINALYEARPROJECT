@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { BentoGrid, BentoGridItem } from "../../../components/ui/bento-grid";
 import Navbar from "../utils/Navbar";
 import { IconClipboardCopy, IconFileBroken, IconLogout } from "@tabler/icons-react";
+import medai from '../../../../public/WELCOME.png'; // Make sure the image is imported correctly
 
 const items = [
   {
@@ -16,7 +17,7 @@ const items = [
     title: "Get AI Assistance",
     description: "Dive into the intelligence of technology",
     icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
-    imageUrl: "/images/ai-bg.jpg",
+    imageUrl: "",
   },
 ];
 
@@ -42,29 +43,42 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen" style={{
-      backgroundImage: "url('/background.jpg')",
-      backgroundSize: "cover",
-      backgroundAttachment: "fixed",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-    }}>
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundImage: "url('/background.jpg')",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       {/* Semi-transparent overlay */}
       <div className="min-h-screen bg-black bg-opacity-50">
+
+        {/* Navbar */}
         <Navbar />
+
+        {/* Image in top left corner */}
+        <img
+          src={medai.src}
+          alt="Welcome"
+          className="absolute top-4 left-4 w-64 h-32" // Adjust size accordingly
+        />
 
         {/* Logout Button */}
         <button
           onClick={handleLogout}
-          className="fixed top-4 right-4 z-50 flex items-center px-4 py-2 text-black bg-white 
+          className="fixed top-8 right-20 z-50 flex items-center px-4 py-2 text-black bg-white 
           hover:bg-black hover:text-white rounded-lg shadow-lg focus:outline-none focus:ring-2 
           focus:ring-white focus:ring-offset-2 transition ease-in-out duration-200"
         >
-          <IconLogout className="h-5 w-5 mr-2" />
+          <IconLogout className="h-5 w-5 mr-4" />
           Logout
         </button>
 
-        <div className="container mx-auto px-4 py-32">
+        {/* Content Section with Margin */}
+        <div className="container mb-2 mx-auto px-4 py-32">
           <BentoGrid className="max-w-4xl mx-auto">
             {items.map((item, i) => (
               <BentoGridItem

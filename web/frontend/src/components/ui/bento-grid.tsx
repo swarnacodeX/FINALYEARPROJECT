@@ -10,14 +10,14 @@ export const BentoGrid = ({
   return (
     <div
       className={cn(
-        "grid md:auto-rows-[35rem] grid-cols-1 md:grid-cols-2 gap-4 max-w-6xl mx-auto ",
+        "grid grid-cols-1 md:grid-cols-2 auto-rows-[22rem] gap-6 max-w-6xl mx-auto p-4",
         className
       )}
     >
       {children}
     </div>
   );
-};  
+};
 
 export const BentoGridItem = ({
   className,
@@ -37,25 +37,36 @@ export const BentoGridItem = ({
   return (
     <div
       className={cn(
-        "row-span-1 rounded-3xl group/bento hover:shadow-xl transition duration-100 shadow-input dark:shadow-none p-4 bg-white border border-transparent justify-between flex flex-col space-y-4 relative overflow-hidden",
-        imageUrl ? "text-white bg-cover bg-center" : "dark:bg-black dark:border-white/[0.2]",
+        "group relative flex flex-col justify-between overflow-hidden rounded-3xl border dark:border-white/20 bg-white dark:bg-neutral-900 p-6 shadow-md transition-all hover:shadow-2xl hover:scale-[1.02]",
+        imageUrl ? "text-white bg-cover bg-center" : "",
         className
       )}
       style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : {}}
     >
-      <div className={cn("relative z-10", imageUrl && "backdrop-blur-sm bg-black/30 p-2 rounded-lg")}>
+      {/* Blur overlay for image background */}
+      {imageUrl && (
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-0 rounded-3xl" />
+      )}
+
+      <div className="relative z-10 flex flex-col space-y-4">
         {header}
-        <div className="group-hover/bento:translate-x-2 transition duration-200">
-          {icon}
-          <div className="font-sans font-bold text-neutral-100 mb-2 mt-2">
-            {title}
-          </div>
-          <div className="font-sans font-normal text-neutral-200 text-xs">
-            {description}
-          </div>
+
+        <div className="flex flex-col space-y-2">
+          {icon && (
+            <div className="text-3xl opacity-90 group-hover:opacity-100 transition">
+              {icon}
+            </div>
+          )}
+          {title && (
+            <h3 className="font-semibold text-lg md:text-xl">{title}</h3>
+          )}
+          {description && (
+            <p className="text-sm opacity-70 leading-relaxed">
+              {description}
+            </p>
+          )}
         </div>
       </div>
     </div>
   );
 };
-

@@ -3,9 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
-import bgImage from "../../../../public/navbar.png"; // Make sure this image exists in the same folder
 
 const transition = {
   type: "spring",
@@ -18,28 +16,18 @@ const transition = {
 
 const Navbar = ({ className }: { className?: string }) => {
   return (
-    <div className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}>
-      
-      <div className="absolute inset-0 z-[-1] rounded-3xl overflow-hidden">
-        <Image
-          src={bgImage}
-          alt="Navbar background"
-          layout="fill"
-          objectFit="cover"
-          quality={100}
-          // optional: add transparency
-        />
-      </div>
-
-      {/* Navbar Content */}
+    <div className={cn("fixed top-6 inset-x-0 flex justify-center z-50", className)}>
+      {/* Shrink Navbar */}
       <nav
-        className="relative rounded-3xl border border-transparent dark:border-white/[0.2] 
-        shadow-input flex justify-center space-x-4 px-8 py-6 backdrop-blur-md bg-black/30"
+        className="relative rounded-full border border-gray-300 shadow-lg
+        flex justify-center items-center space-x-10
+        px-10 py-4 backdrop-blur-md bg-white/80
+        max-w-[600px] w-full"
       >
-        <NavItem link="/?page=home" item="HOME" />
-        <NavItem link="/?page=chatbot" item="AI ASSISTANT" />
-        <NavItem link="/?page=healthrecords" item="HEALTH RECORDS" />
-        <NavItem link="/?page=profile" item="PROFILE" />
+        <NavItem link="/?page=home" item="Home" />
+        <NavItem link="/?page=chatbot" item="AI Assistant" />
+        <NavItem link="/?page=healthrecords" item="Health Records" />
+        <NavItem link="/?page=profile" item="Profile" />
       </nav>
     </div>
   );
@@ -47,12 +35,18 @@ const Navbar = ({ className }: { className?: string }) => {
 
 const NavItem = ({ link, item }: { link: string; item: string }) => {
   return (
-    <Link href={link} className="relative">
+    <Link href={link} className="relative group">
       <motion.p
-        transition={{ duration: 0.3 }}
-        className="cursor-pointer hover:opacity-[0.9] text-white"
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 300 }}
+        className="cursor-pointer text-gray-800 text-sm font-semibold tracking-wide
+        group-hover:text-black transition-all"
       >
         {item}
+        <span
+          className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black rounded-full
+          group-hover:w-full transition-all duration-300 ease-in-out"
+        />
       </motion.p>
     </Link>
   );
