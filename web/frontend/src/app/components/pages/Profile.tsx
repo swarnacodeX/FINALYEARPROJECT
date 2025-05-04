@@ -26,7 +26,7 @@ export default function Profile() {
     age: "",
     weight: "",
     height: "",
-    bloodgroup: "",
+    bloodgroup: ""
   });
 
   const [activeSection, setActiveSection] = useState<"userdata" | "settings">("userdata");
@@ -186,7 +186,7 @@ export default function Profile() {
                         <EditableField label="Age" name="age" value={formData.age} onChange={handleChange} />
                         <EditableField label="Weight (kg)" name="weight" value={formData.weight} onChange={handleChange} />
                         <EditableField label="Height (cm)" name="height" value={formData.height} onChange={handleChange} />
-                        <EditableField label="Blood Group" name="bloodGroup" value={formData.bloodgroup} onChange={handleChange} />
+                        <EditableField label="Blood Group" name="bloodgroup" value={formData.bloodgroup} onChange={handleChange} />
                       </div>
                       <button
                         onClick={handleSave}
