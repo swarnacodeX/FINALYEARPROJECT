@@ -64,10 +64,21 @@ export default function Profile() {
 
   const handleSave = async () => {
     const accesstoken = localStorage.getItem("accesstoken");
+   
+    
     try {
+      
+      const payload = {
+        age: formData.age || "",
+        weight: formData.weight || "",
+        height: formData.height || "",
+        bloodgroup: formData.bloodgroup || "",
+        email: email,
+      };
+
       const res = await axios.put(
         "http://localhost:8002/api/profile",
-        formData,
+        payload,
         { headers: { Authorization: `Bearer ${accesstoken}` } }
       );
       setUser(res.data);
