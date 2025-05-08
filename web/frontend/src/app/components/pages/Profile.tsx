@@ -41,8 +41,6 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const accesstoken = localStorage.getItem("accesstoken");
-    
       try {
         const res = await axios.get(
           "http://localhost:8002/api/profile/fetch",
@@ -62,12 +60,86 @@ export default function Profile() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleUpdateFirstName = async () => {
+    try {
+      const accesstoken = localStorage.getItem("accesstoken");
+      const payload = {
+        email: email,
+        newFirstName: formData.firstName
+      };
+
+      const response = await axios.put(
+        "http://localhost:8001/api/user/changefirstname",
+        payload,
+        { headers: { Authorization: `Bearer ${accesstoken}` } }
+      );
+      
+      // Update local state
+      setUser({...user, firstName: formData.firstName});
+      
+      // Update localStorage
+      localStorage.setItem("firstname", formData.firstName);
+      
+      // Close edit mode
+      setEditFirstName(false);
+    } catch (error) {
+      console.error("Failed to update first name:", error);
+    }
+  };
+
+  const handleUpdateLastName = async () => {
+    try {
+      const accesstoken = localStorage.getItem("accesstoken");
+      const payload = {
+        email: email,
+        newLastName: formData.lastName
+      };
+
+      const response = await axios.put(
+        "http://localhost:8001/api/user/changelastname",
+        payload,
+        { headers: { Authorization: `Bearer ${accesstoken}` } }
+      );
+      
+      // Update local state
+      setUser({...user, lastName: formData.lastName});
+      
+      // Update localStorage
+      localStorage.setItem("lastname", formData.lastName);
+      
+      // Close edit mode
+      setEditLastName(false);
+    } catch (error) {
+      console.error("Failed to update last name:", error);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    try {
+      const accesstoken = localStorage.getItem("accesstoken");
+      const payload = {
+        email: email,
+        newPassword: formData.password
+      };
+
+      const response = await axios.put(
+        "http://localhost:8001/api/user/changepassword",
+        payload,
+        { headers: { Authorization: `Bearer ${accesstoken}` } }
+      );
+      
+      // Clear password field and close edit mode
+      setFormData({...formData, password: ""});
+      setEditPassword(false);
+    } catch (error) {
+      console.error("Failed to update password:", error);
+    }
+  };
+
   const handleSave = async () => {
     const accesstoken = localStorage.getItem("accesstoken");
    
-    
     try {
-      
       const payload = {
         age: formData.age || "",
         weight: formData.weight || "",
@@ -83,9 +155,6 @@ export default function Profile() {
       );
       setUser(res.data);
       setEditUserData(false);
-      setEditFirstName(false);
-      setEditLastName(false);
-      setEditPassword(false);
     } catch (error) {
       console.error("Failed to save profile:", error);
     }
@@ -116,11 +185,11 @@ export default function Profile() {
       <div className="min-h-screen bg-black bg-opacity-50 pb-10 pt-32 sm:pt-40">
         <Navbar />
         <img
-        src={medai.src}
-        alt="Welcome"
-        className="absolute top-4 left-4 w-64 h-32" // Adjust size as needed
-      />
-        <motion.div 
+          src={medai.src}
+          alt="Welcome"
+          className="absolute top-4 left-4 w-64 h-32" // Adjust size as needed
+        />
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8"
@@ -229,7 +298,7 @@ export default function Profile() {
                         <label className="block text-sm font-medium text-gray-900">First Name</label>
                         {!editFirstName ? (
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-600">{user.firstName || "--"}</span>
+                            <span className="text-gray-600">{firstname || "--"}</span>
                             <button
                               onClick={() => setEditFirstName(true)}
                               className="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200 text-sm"
@@ -242,12 +311,12 @@ export default function Profile() {
                             <input
                               type="text"
                               name="firstName"
-                              value={formData.firstName}
+                              value={formData.firstName || ' '}
                               onChange={handleChange}
                               className="flex-1 rounded-lg border p-2 text-sm"
                             />
                             <button
-                              onClick={handleSave}
+                              onClick={handleUpdateFirstName}
                               className="px-3 py-1 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm"
                             >
                               Save
@@ -267,7 +336,7 @@ export default function Profile() {
                         <label className="block text-sm font-medium text-gray-900">Last Name</label>
                         {!editLastName ? (
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-600">{user.lastName || "--"}</span>
+                            <span className="text-gray-600">{lastname || "--"}</span>
                             <button
                               onClick={() => setEditLastName(true)}
                               className="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200 text-sm"
@@ -280,12 +349,12 @@ export default function Profile() {
                             <input
                               type="text"
                               name="lastName"
-                              value={formData.lastName}
+                              value={formData.lastName || ' '}
                               onChange={handleChange}
                               className="flex-1 rounded-lg border p-2 text-sm"
                             />
                             <button
-                              onClick={handleSave}
+                              onClick={handleUpdateLastName}
                               className="px-3 py-1 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm"
                             >
                               Save
@@ -323,7 +392,7 @@ export default function Profile() {
                               placeholder="New password"
                             />
                             <button
-                              onClick={handleSave}
+                              onClick={handleUpdatePassword}
                               className="px-3 py-1 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm"
                             >
                               Save

@@ -1,32 +1,30 @@
 package users.controller;
+
 import users.model.User;
 import users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.HashMap;
-import java.util.Map;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:3000") 
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserControllers {
 
     @Autowired
     private UserService userService;
-        public static String generateSHA256(String input) {
+
+    public static String generateSHA256(String input) {
         try {
-            // Create a MessageDigest instance for SHA-256
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            
-            // Convert input string to bytes and calculate the hash
             byte[] hashBytes = digest.digest(input.getBytes(StandardCharsets.UTF_8));
-            
-            // Convert byte array to hexadecimal string
             StringBuilder hexString = new StringBuilder();
             for (byte b : hashBytes) {
                 String hex = Integer.toHexString(0xff & b);
@@ -45,7 +43,6 @@ public class UserControllers {
         String hashedPassword = generateSHA256(user.getPassword());
         user.setPassword(hashedPassword);
         User savedUser = userService.signUp(user);
-        // Prepare response with email and accessToken
         Map<String, String> response = new HashMap<>();
         response.put("email", savedUser.getEmail());
         response.put("accessToken", savedUser.getAccesstoken());
@@ -57,7 +54,7 @@ public class UserControllers {
     public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest) {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
-        String passwordhash=generateSHA256(password);
+        String passwordhash = generateSHA256(password);
 
         User user = userService.login(email, passwordhash);
 
@@ -66,13 +63,51 @@ public class UserControllers {
             Map<String, String> response = new HashMap<>();
             response.put("email", email);
             response.put("accesstoken", newAccessToken);
-            response.put("firstname",user.getFirstname());
-            response.put("lastname",user.getLastname());
+            response.put("firstname", user.getFirstname());
+            response.put("lastname", user.getLastname());
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+    }
 
-    
+    // Change First Name
+    @PutMapping("/changefirstname")
+    public ResponseEntity<?> changeFirstName(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            String newFirstName = request.get("newFirstName");
+            User updatedUser = userService.updateFirstName(email, newFirstName);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    // Change Last Name
+    @PutMapping("/changelastname")
+    public ResponseEntity<?> changeLastName(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            String newLastName = request.get("newLastName");
+            User updatedUser = userService.updateLastName(email, newLastName);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    // Change Password
+    @PutMapping("/changepassword")
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            String newPassword = request.get("newPassword");
+            String hashedPassword = generateSHA256(newPassword);
+            User updatedUser = userService.updatePassword(email, hashedPassword);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

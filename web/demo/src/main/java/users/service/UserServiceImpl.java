@@ -2,8 +2,7 @@ package users.service;
 
 import users.model.User;
 import users.repository.UserRepository;
-
-
+import users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,19 +52,44 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(email).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    // Update first name
     @Override
-    public User updateUser(User user, String email) {
-        User existingUser = userRepository.findById(email).orElseThrow(() -> new RuntimeException("User not found"));
-        existingUser.setFirstname(user.getFirstname());
-        existingUser.setLastname(user.getLastname());
-        existingUser.setPassword(user.getPassword());
-        existingUser.setAccesstoken(user.getAccesstoken());
-        return userRepository.save(existingUser);
+    public User updateFirstName(String email, String newFirstName) {
+        User user = userRepository.findById(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setFirstname(newFirstName);
+        return userRepository.save(user);
+    }
+
+    // Update last name
+    @Override
+    public User updateLastName(String email, String newLastName) {
+        User user = userRepository.findById(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setLastname(newLastName);
+        return userRepository.save(user);
+    }
+
+    // Update password
+    @Override
+    public User updatePassword(String email, String newPassword) {
+        User user = userRepository.findById(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setPassword(newPassword);
+        return userRepository.save(user);
     }
 
     @Override
     public void deleteUser(String email) {
         userRepository.findById(email).orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.deleteById(email);
+    }
+    
+    // New implementation of updateUser as required by the UserService interface.
+    @Override
+    public User updateUser(User user, String newValue) {
+        // For example, update user's password with newValue.
+        user.setPassword(newValue);
+        return userRepository.save(user);
     }
 }
