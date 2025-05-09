@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../utils/Navbar';
 import medai from '../../../../public/WELCOME.png'; // Import the image
-
+import axios from 'axios';
 const ChatBot = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null); // File type for selected image
   const [prediction, setPrediction] = useState<string | null>(null); // Prediction result
@@ -15,31 +15,37 @@ const ChatBot = () => {
   };
 
   const handleSubmit = async () => {
-    if (!selectedImage) {
-      alert('Please select an image');
-      return;
-    }
+  if (!selectedImage) {
+    alert('Please select an image');
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append('image', selectedImage);
+  const formData = new FormData();
+  formData.append('image', selectedImage); // key must be 'image' to match Flask API
 
-    try {
-      const response = await fetch('https://6d35-35-245-148-166.ngrok-free.app/predict', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setPrediction(data.prediction); // Set the prediction result
-      } else {
-        alert(data.error || 'Error during prediction');
+  try {
+    const response = await axios.post(
+      'https://8333-34-138-25-129.ngrok-free.app/predict',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       }
-    } catch (error) {
-      console.error('Error during request:', error);
-      alert('Error during request');
+    );
+
+    const data = response.data;
+    if (response.status === 200) {
+      setPrediction(data.prediction); // Set the prediction result
+    } else {
+      alert(data.error || 'Error during prediction');
     }
-  };
+  } catch (error) {
+    console.error('Error during request:', error);
+    alert('Error during request');
+  }
+};
+
 
   return (
     <div className="h-screen w-full">
@@ -56,7 +62,7 @@ const ChatBot = () => {
             alt="Welcome"
             className="absolute top-4 left-4 w-64 h-32" // Adjust size as needed
           />
-          <h2 className="text-2xl font-bold mb-4 text-center">Chatbot</h2>
+          <h2 className="text-2xl font-bold mb-4 text-center">AI:Chest Disease Detection System</h2>
           <div className="mb-3">
             <input
               type="file"
@@ -65,7 +71,7 @@ const ChatBot = () => {
             />
           </div>
           <button
-            className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 w-full"
+            className="bg-black hover:bg-stone-700 text-white rounded-lg px-4 py-2 w-full"
             onClick={handleSubmit}
           >
             Send
@@ -79,6 +85,9 @@ const ChatBot = () => {
           )}
         </div>
       </div>
+      <footer className="bg-gray-800 text-white py-4 text-center absolute bottom-0 w-full">
+        <p>&copy; MED-AI's AI prediction system analyzes chest X-ray images to assist in identifying potential chest diseases. The results provided are for informational purposes only and do not constitute a medical diagnosis. For further assistance or to discuss your results, please contact a qualified healthcare professional. If you experience urgent symptoms, seek immediate medical attention.</p>
+      </footer>
     </div>
   );
 };
